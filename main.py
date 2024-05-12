@@ -37,7 +37,7 @@ class startMenu(QMainWindow):
         self.sock.setblocking(0)
         self.sock.bind((self.SENDER_IP, self.SENDER_PORT))
 
-        # self.debugMode_QCheck.hide()
+        self.debugMode_QCheck.hide()
         self.game_window = None
         self.gmChosen = "Target Score"
         self.targetScore = self.value_QSpin.value()
