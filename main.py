@@ -1,9 +1,3 @@
-"""
-Simulateur de jeu de 52 cartes
-Liam BERGE TG1 | Started On: 21/10/2023 | Last Edit: 22/01/2024
-Code Reworked on the 11/04/2024 | Last Edit: 11/05/2024
-"""
-
 import pickle
 import socket
 import sys
