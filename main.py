@@ -1,17 +1,14 @@
 import json
-import pickle
-import socket
 import sys
 from time import sleep
-import threading
 from functools import partial
-from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtGui import QIcon
 from PyQt6 import uic, QtGui
 from PyQt6.QtCore import QTimer
 
-from scripts.menus import debugMenu, cardMenu
-from scripts.players import Deck, Player, Client
+from scripts.menus import cardMenu
+from scripts.players import Deck, Client
 from scripts.utils import warningBox
 
 
@@ -31,10 +28,9 @@ class Game(QMainWindow):
 
         # Starting variables
         self.deckWindow = None
-        self.debugMenu = None
+
         self.cardMenu = None
         sleep(.5)
-        print(f"Player: {self.client.player}")
 
         # Load the UI
         if self.client.player == 1:
@@ -49,12 +45,6 @@ class Game(QMainWindow):
         self.setFixedSize(self.size())
         self.show() # Then displays it.
 
-        self.debugging = self.client.debugMode
-        if self.debugging and self.client.player == 1:
-            self.seeDebugMenu_QButton.show()
-
-        self.debugging = self.client.debugMode
-
         # Creating a repeating clock that calls the processData function every 100ms.
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateComponents)
@@ -66,8 +56,7 @@ class Game(QMainWindow):
             self.send_QButton.clicked.connect(partial(self.sendMessage, 1))
         else:
             self.send_QButton.clicked.connect(partial(self.sendMessage, 2))
-        if self.debugging and self.client.player == 1:
-            self.seeDebugMenu_QButton.clicked.connect(self.seeDebugMenu)
+
 
         # Initialize the variables.
         self.currentRound = 1
@@ -78,16 +67,6 @@ class Game(QMainWindow):
         self.changeCards(self.currentCardDisplayP1_QLabel, self.currentCardNameP1_QLabel, self.client.P1.currentCard)
         self.changeCards(self.currentCardDisplayP2_QLabel, self.currentCardNameP2_QLabel, self.client.P2.currentCard)
 
-        if self.client.player == 1:
-            if not self.debugging:
-                self.seeDebugMenu_QButton.hide()
-                
-    def seeDebugMenu(self):
-        if self.debugMenu:
-            self.debugMenu.close()
-        
-        self.debugMenu = debugMenu(self)
-        self.debugMenu.show()
     
     def showDeck(self):
         """

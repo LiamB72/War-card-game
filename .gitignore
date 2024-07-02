@@ -3,3 +3,5 @@
 /.idea
 server.spec
 main.spec
+/scripts/__pycache__
+/debug
