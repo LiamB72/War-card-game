@@ -3,6 +3,7 @@ from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtWidgets import QPushButton, QWidget, QVBoxLayout, QHBoxLayout, QScrollArea
 from scripts.utils import warningBox
 from random import randint
+from scripts.players import Deck
 
 
 class cardMenu(QWidget):
@@ -37,7 +38,7 @@ class cardMenu(QWidget):
                 button.my_data = self.deck[i]
                 button.clicked.connect(self.button_clicked)
 
-                pixmap = QPixmap(f"data/images/cards/{self.gameWindow.cards.images[self.deck[i]]}.png")
+                pixmap = QPixmap(f"data/images/cards/{self.gameWindow.deckGame.images[self.deck[i]]}.png")
                 button.setIcon(QIcon(pixmap))
                 button.setIconSize(pixmap.size())
                 button.setMaximumSize(145, 196)
@@ -53,19 +54,11 @@ class cardMenu(QWidget):
         if hasattr(sender, 'my_data'):
             if self.player.playerNumber == 1:
                 self.player.currentCard = sender.my_data
-                self.gameWindow.changeCards(self.gameWindow.currentCardDisplayP1_QLabel,
-                                            self.gameWindow.currentCardNameP1_QLabel, self.gameWindow.P1.currentCard)
+                self.gameWindow.changeCards(self.gameWindow.currentCardDisplayP1_QLabel,self.gameWindow.currentCardNameP1_QLabel, self.gameWindow.client.P1.currentCard)
 
             elif self.player.playerNumber == 2:
                 self.player.currentCard = sender.my_data
-                self.gameWindow.changeCards(self.gameWindow.currentCardDisplayP2_QLabel,
-                                            self.gameWindow.currentCardNameP2_QLabel, self.gameWindow.P2.currentCard)
-
-            if self.debug:
-                print("------------------------------------")
-                print(
-                    f"You've Selected:\nCard: {sender.my_data}\nName: {self.gameWindow.cards.cardName(sender.my_data)}")
-                print("------------------------------------")
+                self.gameWindow.changeCards(self.gameWindow.currentCardDisplayP2_QLabel,self.gameWindow.currentCardNameP2_QLabel, self.gameWindow.client.P2.currentCard)
 
         self.close()
 
@@ -80,9 +73,6 @@ class debugMenu(QWidget):
         self.setFixedSize(self.size())
         self.gameWindow = gameWindow
 
-        self.ipP1_QLabel.setText(f"P1's IP: {self.gameWindow.SENDER_IP}")
-        self.ipP2_QLabel.setText(f"P2's IP: {self.gameWindow.RECEIVER_IP}")
-
         self.giveScoreButton.clicked.connect(self.debugScoreAdd)
         self.playRRoundButton.clicked.connect(self.playRRound)
         self.playRoundButton.clicked.connect(self.playRound)
@@ -94,59 +84,59 @@ class debugMenu(QWidget):
         self.playersWaitingDeckButton.clicked.connect(self.seePlayersWaitingDeck)
 
     def seePlayersDeck(self):
-        print(f"\n----\nPlayer 1 Deck: {self.gameWindow.P1.deck}\nPlayer 2 Deck: {self.gameWindow.P2.deck}\n----\n")
+        print(f"\n----\nPlayer 1 Deck: {self.gameWindow.client.P1.deck}\nPlayer 2 Deck: {self.gameWindow.client.P2.deck}\n----\n")
 
     def seePlayersBattleDeck(self):
         print(
-            f"\n----\nPlayer 1 Battle Deck: {self.gameWindow.P1.battleDeck}\nPlayer 2 Battle Deck: {self.gameWindow.P2.battleDeck}\n----\n")
+            f"\n----\nPlayer 1 Battle Deck: {self.gameWindow.client.P1.battleDeck}\nPlayer 2 Battle Deck: {self.gameWindow.client.P2.battleDeck}\n----\n")
 
     def seePlayersWaitingDeck(self):
         print(
-            f"\n----\nPlayer 1 Waiting Deck: {self.gameWindow.P1.waitingDeck}\nPlayer 2 Waiting Deck: {self.gameWindow.P2.waitingDeck}\n----\n")
+            f"\n----\nPlayer 1 Waiting Deck: {self.gameWindow.client.P1.waitingDeck}\nPlayer 2 Waiting Deck: {self.gameWindow.client.P2.waitingDeck}\n----\n")
 
     def debugScoreAdd(self):
         score_to_add = self.giveScoreBox.value()
         playerToGiveTo = self.playerBox.currentText()
         if playerToGiveTo == 'Player 1':
-            self.gameWindow.P1.victoryCount += score_to_add
-            print(self.gameWindow.P1.victoryCount)
+            self.gameWindow.client.P1.victoryCount += score_to_add
+            print(self.gameWindow.client.P1.victoryCount)
         else:
-            self.gameWindow.P2.victoryCount += score_to_add
-            print(self.gameWindow.P2.victoryCount)
+            self.gameWindow.client.P2.victoryCount += score_to_add
+            print(self.gameWindow.client.P2.victoryCount)
 
     def sendP2Card(self):
         self.gameWindow.sendMessage(2)
 
     def playRRound(self):
-        lenDeck1 = len(self.gameWindow.P1.deck)
-        self.gameWindow.P1.currentCard = self.gameWindow.P1.deck[randint(0, lenDeck1 - 1)]
+        lenDeck1 = len(self.gameWindow.client.P1.deck)
+        self.gameWindow.client.P1.currentCard = self.gameWindow.client.P1.deck[randint(0, lenDeck1 - 1)]
         self.gameWindow.changeCards(self.gameWindow.currentCardDisplayP1_QLabel,
-                                    self.gameWindow.currentCardNameP1_QLabel, self.gameWindow.P1.currentCard)
+                                    self.gameWindow.currentCardNameP1_QLabel, self.gameWindow.client.P1.currentCard)
         self.gameWindow.sendMessage(1)
 
-        lenDeck2 = len(self.gameWindow.P2.deck)
-        self.gameWindow.P2.currentCard = self.gameWindow.P2.deck[randint(0, lenDeck2 - 1)]
+        lenDeck2 = len(self.gameWindow.client.P2.deck)
+        self.gameWindow.client.P2.currentCard = self.gameWindow.client.P2.deck[randint(0, lenDeck2 - 1)]
         self.gameWindow.changeCards(self.gameWindow.currentCardDisplayP2_QLabel,
-                                    self.gameWindow.currentCardNameP2_QLabel, self.gameWindow.P2.currentCard)
+                                    self.gameWindow.currentCardNameP2_QLabel, self.gameWindow.client.P2.currentCard)
         self.gameWindow.sendMessage(2)
 
     def playRound(self):
-        self.gameWindow.P1.r = True
+        self.gameWindow.client.P1.r = True
         self.gameWindow.sendMessage(1)
-        self.gameWindow.P2.r = True
+        self.gameWindow.client.P2.r = True
         self.gameWindow.sendMessage(2)
 
     def seeP1Deck(self):
         if self.gameWindow.deckWindow:
             self.gameWindow.deckWindow.close()
 
-        self.gameWindow.deckWindow = cardMenu(self.gameWindow, self.gameWindow.P1)
+        self.gameWindow.deckWindow = cardMenu(self.gameWindow, self.gameWindow.client.P1)
         self.gameWindow.deckWindow.show()
 
     def seeP2Deck(self):
         if self.gameWindow.deckWindow:
             self.gameWindow.deckWindow.close()
 
-        self.gameWindow.deckWindow = cardMenu(self.gameWindow, self.gameWindow.P2)
+        self.gameWindow.deckWindow = cardMenu(self.gameWindow, self.gameWindow.client.P2)
         self.gameWindow.deckWindow.show()
 
