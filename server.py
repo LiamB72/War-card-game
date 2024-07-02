@@ -10,7 +10,6 @@ class Server:
 
     def __init__(self, ip):
         self.FORMAT = "utf-8"
-        self.host, self.port = socket.gethostbyname(socket.gethostname()), 5000
         self.host, self.port = ip, 5000
         endpoint = (self.host, self.port)
 
@@ -22,7 +21,7 @@ class Server:
         self.P2 = Player(2)
         self.battle = 0
 
-        self.debugMode = True
+        self.debugMode = False
 
         self.gameDeck = Deck()
         for i in range(randint(2, 10)):
