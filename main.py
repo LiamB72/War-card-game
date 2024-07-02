@@ -21,17 +21,10 @@ class Game(QMainWindow):
         super().__init__()
         ip = input("INPUT SERVER IP: ")
         self.client = Client(ip)
-        # self.startClientThread = threading.Thread(target=self.client.start)
-        # self.startClientThread.start()
         self.client.start()
 
         self.defaultCase = {(-1, -1), ()}
         self.deckGame = Deck()
-
-        self.client = Client("172.26.139.195")
-        # self.startClientThread = threading.Thread(target=self.client.start)
-        # self.startClientThread.start()
-        self.client.start()
 
         self.defaultCase = {(-1, -1), ()}
         self.deckGame = Deck()
