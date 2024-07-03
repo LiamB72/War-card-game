@@ -22,8 +22,6 @@ class Server:
         self.battle = 0
         self.battleDeck = []
 
-        self.debugMode = False
-
         self.gameDeck = Deck()
         for i in range(randint(2, 10)):
             self.gameDeck.shuffleCards()

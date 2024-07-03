@@ -11,7 +11,6 @@ class cardMenu(QWidget):
         self.gameWindow = superWindow
         self.player = player
         self.deck = self.player.deck
-        self.debug = self.gameWindow.debugging
 
         self.setWindowTitle(f"War Card Game - Your Deck - Remaining Cards: {len(self.deck)} - Amount in the waiting deck: {len(self.player.waitingDeck)}")
         self.setWindowIcon(QIcon("data/images/QTImages/safe.png"))
